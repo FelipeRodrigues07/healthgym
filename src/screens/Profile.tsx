@@ -92,7 +92,7 @@ if(photoSelected.assets[0].uri) {
             isDisabled
           />
         
-        <Heading color="gray.200" fontSize="md" mb={2} alignSelf="flex-start" mt={12}>
+        <Heading color="gray.200" fontSize="md" mb={2} alignSelf="flex-start" mt={12} fontFamily="heading">
             Alterar senha
           </Heading>
 
