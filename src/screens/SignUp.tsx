@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { VStack, Image, Text, Center, Heading, ScrollView, KeyboardAvoidingView , useToast} from "native-base";
 import { Platform } from 'react-native'
-import { Alert } from 'react-native';
+import { useState } from 'react';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
@@ -16,6 +16,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { api } from "@services/api";
 import { AppError } from '@utils/AppError'
+
+import { useAuth } from '@hooks/useAuth';
 
 type FormDataProps = {
   name: string;
@@ -32,7 +34,7 @@ const signUpSchema = yup.object({
 });
 
 export function SignUp() {
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -52,12 +54,18 @@ export function SignUp() {
   });
 
   const toast = useToast();
+
+  const { singIn } = useAuth();
+
   async function handleSignUp({ name, email, password }: FormDataProps) {
 
     try {
-        const reponse = await api.post('/users', { name, email, password });
-        console.log(reponse.data);
+      setIsLoading(true)
+
+      await api.post('/users', { name, email, password });
+      await singIn(email, password)
     } catch (error) {
+      setIsLoading(false);
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível criar a conta. Por Favor, tente mais tarde.'
       //quando uma mensagem de erro não é tratada
@@ -179,9 +187,10 @@ export function SignUp() {
               )}
             />
 
-            <Button title="Criar e acessar" onPress={() => {
+            <Button title="Criar e acessar"  isLoading={isLoading} onPress={() => {
               handleSubmit(handleSignUp)();
               handleReset();
+              // onPress={handleSubmit(handleSignUp)}
             }} />
 
           </Center>
