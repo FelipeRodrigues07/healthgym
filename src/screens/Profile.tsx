@@ -7,7 +7,7 @@ import { ScreenHeader } from '@components/ScreenHeader';
 import { UserPhoto } from '@components/UserPhoto';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
-
+import defaulUserPhotoImg from '@assets/userPhotoDefault.png';
 
 const PHOTO_SIZE = 33;
 
@@ -23,6 +23,8 @@ import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
 
 
+
+
 type FormDataProps = {
   name: string;
   email: string; 
@@ -34,7 +36,7 @@ type FormDataProps = {
 const profileSchema = yup.object({
   name: yup.string().required('Informe o nome.'),
   email: yup.string().required('Informe o email.').email(),
-  old_password: yup.string().required('Informe a senha antiga.').nullable().transform((value) => !!value ? value : null),
+  old_password: yup.string().nullable().transform((value) => !!value ? value : null),//.required('Informe a senha antiga.')
   password: yup.string().min(6, 'A senha deve ter pelo menos 6 dígitos.').nullable().transform((value) => !!value ? value : null),
   confirm_password: yup
     .string()
@@ -55,7 +57,7 @@ const profileSchema = yup.object({
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
-  const [userPhoto, setUserPhoto] = useState('https://avatars.githubusercontent.com/u/132761611?s=400&u=57cb65b2f358ccc7c95c65ada14cb8483cee9ab2&v=4');
+  // const [userPhoto, setUserPhoto] = useState('https://avatars.githubusercontent.com/u/132761611?s=400&u=57cb65b2f358ccc7c95c65ada14cb8483cee9ab2&v=4');
 
   const toast = useToast();
 
@@ -80,7 +82,40 @@ if(photoSelected.assets[0].uri) {
       bgColor: 'red.500'
     })
  }
-  setUserPhoto(photoSelected.assets[0].uri);
+
+
+ const fileExtension = photoSelected.assets[0].uri.split('.').pop();
+
+ const photoFile = {
+   name: `${user.name}.${fileExtension}`.toLowerCase(),
+   uri: photoSelected.assets[0].uri,
+   type: `${photoSelected.assets[0].type}/${fileExtension}`
+ }as any;
+
+ const userPhotoUploadForm = new FormData();
+ 
+ userPhotoUploadForm.append('avatar', photoFile);
+ 
+ const avatarUpdtedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
+   headers: {
+     'Content-Type': 'multipart/form-data'   //qual é o conteudo, não é um json
+   }
+ });
+
+ const userUpdated = user;
+
+ userUpdated.avatar = avatarUpdtedResponse.data.avatar;
+
+ await updateUserProfile(userUpdated);
+
+ toast.show({
+   title: 'Foto atualizada!',
+   placement: 'top',
+   bgColor: 'green.500'
+ })
+
+ //console.log(photoFile);
+  // setUserPhoto(photoSelected.assets[0].uri);
 }
 
   }catch (error){
@@ -147,7 +182,11 @@ const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>(
               />
             :
               <UserPhoto 
-                source={{ uri: userPhoto }}
+              source={
+                user.avatar  
+                ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+                : defaulUserPhotoImg
+              }
                 alt="Foto do usuário"
                 size={PHOTO_SIZE}
               />
