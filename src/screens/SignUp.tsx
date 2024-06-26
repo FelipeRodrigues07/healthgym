@@ -108,15 +108,19 @@ export function SignUp() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-        <VStack flex={1} px={10} pb={16}>
+        <VStack flex={1}>
           <Image
             source={BackgroundImg}
             defaultSource={BackgroundImg}//carrega mais rapido, padrão
             alt="Pessoas treinando"
-            resizeMode="contain"
+            resizeMode="cover" 
+            width="100%" 
+            height="100%" 
             position="absolute"
+            left={0} 
+            right={0} 
           />
-
+         <VStack flex={1} px={10} pb={16}>
           <Center my={24}>
             <LogoSvg />
 
@@ -201,6 +205,7 @@ export function SignUp() {
             mt={12}
             onPress={handleGoBack}
           />
+          </VStack>
         </VStack>
       </ScrollView>
     </KeyboardAvoidingView>
