@@ -17,7 +17,7 @@ type PromiseType = {
 
 
 const api = axios.create({
-    baseURL: 'http://10.50.0.148:3333',
+    baseURL: 'http://192.168.15.20:3333',
     timeout: 6000,
 })  as APIInstanceProps;
 

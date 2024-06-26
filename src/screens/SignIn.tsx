@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { VStack, Image, Text, Center, Heading,  ScrollView, KeyboardAvoidingView,  useToast} from "native-base";
+import { VStack, Image, Text, Center, Heading, ScrollView, KeyboardAvoidingView, useToast } from "native-base";
 import { Platform } from 'react-native'
 import { useState } from 'react';
 
@@ -37,7 +37,7 @@ export function SignIn() {
 
   const toas = useToast();
   const { singIn } = useAuth();
-  
+
   async function handleSignIn({ email, password }: FormData) {
     try {
       setIsLoading(true);
@@ -45,7 +45,7 @@ export function SignIn() {
     } catch (error) {
       const isAppError = error instanceof AppError;
 
-      const title =  isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.'
+      const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.'
 
       toas.show({
         title,
@@ -55,77 +55,84 @@ export function SignIn() {
       setIsLoading(false);
     }
   }
-  
-  
+
+
   const [isLoading, setIsLoading] = useState(false)
 
 
-  return ( 
+  return (
     <KeyboardAvoidingView
-    flex={1}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  >      
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}  showsVerticalScrollIndicator={false}>
-    <VStack flex={1} px={10}>
-      <Image 
-        source={BackgroundImg}
-        defaultSource={BackgroundImg} //carrega mais rapido, padrão
-        alt="Pessoas treinando"
-        resizeMode="contain"
-        position="absolute"
-      />
-       <Center my={24}>
-        <LogoSvg />
+      flex={1}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        <VStack flex={1}  >
+          <Image
 
-        <Text color="gray.100" fontSize="sm">
-          Treine sua mente e o seu corpo.
-        </Text>
-      </Center>
-      <Center>
-        <Heading color="gray.100" fontSize="xl" mb={6} fontFamily="heading">
-          Acesse a conta
-        </Heading>
-        <Controller 
-            control={control}
-            name="email"
-            rules={{ required: 'Informe o e-mail' }}
-            render={({ field: { onChange } }) => (
-              <Input 
-                placeholder="E-mail" 
-                keyboardType="email-address"
-                autoCapitalize="none"
-                onChangeText={onChange}
-                errorMessage={errors.email?.message}
-              />
-            )}
+            source={BackgroundImg}
+            defaultSource={BackgroundImg} //carrega mais rapido, padrão
+            alt="Pessoas treinando"
+            resizeMode="contain" 
+            width="100%" 
+            height="100%" 
+            position="absolute"
+            left={0} 
+            right={0} 
           />
-        <Controller 
-            control={control}
-            name="password"
-            rules={{ required: 'Informe a senha' }}
-            render={({ field: { onChange } }) => (
-              <Input 
-                placeholder="Senha" 
-                secureTextEntry
-                onChangeText={onChange}
-                errorMessage={errors.password?.message}
+          <VStack flex={1} px={10} >
+            <Center my={24}>
+              <LogoSvg />
+
+              <Text color="gray.100" fontSize="sm">
+                Treine sua mente e o seu corpo.
+              </Text>
+            </Center>
+            <Center>
+              <Heading color="gray.100" fontSize="xl" mb={6} fontFamily="heading">
+                Acesse a conta
+              </Heading>
+              <Controller
+                control={control}
+                name="email"
+                rules={{ required: 'Informe o e-mail' }}
+                render={({ field: { onChange } }) => (
+                  <Input
+                    placeholder="E-mail"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    onChangeText={onChange}
+                    errorMessage={errors.email?.message}
+                  />
+                )}
               />
-            )}
-          />
-         <Button title="Acessar" onPress={handleSubmit(handleSignIn)}  isLoading={isLoading} />
-      </Center>
-      <Center mt={24}>
-          <Text color="gray.100" fontSize="sm" mb={3} fontFamily="body">
-            Ainda não tem acesso?
-          </Text>
-        </Center>
-      <Button 
-      title="Criar Conta" 
-      variant="outline"
-      onPress={handleNewAccount}
-       />
-    </VStack>
-    </ScrollView>
+              <Controller
+                control={control}
+                name="password"
+                rules={{ required: 'Informe a senha' }}
+                render={({ field: { onChange } }) => (
+                  <Input
+                    placeholder="Senha"
+                    secureTextEntry
+                    onChangeText={onChange}
+                    errorMessage={errors.password?.message}
+                  />
+                )}
+              />
+              <Button title="Acessar" onPress={handleSubmit(handleSignIn)} isLoading={isLoading} />
+            </Center>
+            <Center mt={24}>
+              <Text color="gray.100" fontSize="sm" mb={3} fontFamily="body">
+                Ainda não tem acesso?
+              </Text>
+            </Center>
+            <Button
+              title="Criar Conta"
+              variant="outline"
+              onPress={handleNewAccount}
+            />
+          </VStack>
+        </VStack>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
