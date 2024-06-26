@@ -72,7 +72,7 @@ export function SignIn() {
             source={BackgroundImg}
             defaultSource={BackgroundImg} //carrega mais rapido, padrão
             alt="Pessoas treinando"
-            resizeMode="contain" 
+            resizeMode="cover" 
             width="100%" 
             height="100%" 
             position="absolute"
